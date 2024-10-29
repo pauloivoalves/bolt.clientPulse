@@ -27,3 +27,24 @@ export const register = async (data: RegisterData) => {
     throw new Error('Network error occurred');
   }
 };
+
+export async function login(credentials: { email: string; password: string }) {
+  try {
+    const response = await api.post('/login', credentials);
+    
+    const { token, user } = response.data;
+    
+    // Store the token (you might want to use a separate auth service for this)
+    localStorage.setItem('authToken', token);
+    
+    // Set the token for future requests
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    
+    return { token, user };
+  } catch (error: any) {
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Login failed');
+    }
+    throw new Error('Network error occurred');
+  }
+}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
-import { register, RegisterData } from '../services/api';
+import { register, login } from '../services/api';
 
 type AuthMode = 'login' | 'signup';
 
@@ -47,8 +47,24 @@ export function AuthForm({ initialMode }: AuthFormProps) {
         alert('Registration successful! Please log in.');
         setMode('login');
       } else {
-        // Handle login logic here
-        console.log('Login functionality to be implemented');
+        // Handle login
+        const response = await login({
+          email: formData.email,
+          password: formData.password,
+        });
+        
+        // Store the token in localStorage or your preferred storage method
+        localStorage.setItem('authToken', response.token);
+        
+        // Clear form
+        setFormData({ email: '', password: '', name: '' });
+        
+        console.log('Login response:', response.user.id);
+        console.log('User token:', response.token);
+
+        // Redirect or update UI as needed
+       // window.location.href = '/dashboard'; // Or use your router's navigation
+
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred');
