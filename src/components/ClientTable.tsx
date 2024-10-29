@@ -1,13 +1,15 @@
-import { Edit2, Trash2 } from 'lucide-react';
+import { Trash2, Pencil } from 'lucide-react';
 import type { Client } from '../services/clientService';
 
 interface ClientTableProps {
   clients: Client[];
   isLoading: boolean;
   onRefresh: () => void;
+  onEdit: (client: Client) => void;
+  onDelete: (clientId: string) => Promise<void>;
 }
 
-export function ClientTable({ clients, isLoading }: ClientTableProps) {
+export function ClientTable({ clients, isLoading, onEdit, onDelete }: ClientTableProps) {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-8">
@@ -64,10 +66,16 @@ export function ClientTable({ clients, isLoading }: ClientTableProps) {
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right">
-                <button className="text-blue-600 hover:text-blue-900 mr-3">
-                  <Edit2 className="h-5 w-5" />
+                <button
+                  onClick={() => onEdit(client)}
+                  className="text-blue-600 hover:text-blue-800 p-1 rounded transition-colors"
+                >
+                  <Pencil className="h-5 w-5" />
                 </button>
-                <button className="text-red-600 hover:text-red-900">
+                <button
+                  onClick={() => onDelete(client._id)}
+                  className="text-red-600 hover:text-red-800"
+                >
                   <Trash2 className="h-5 w-5" />
                 </button>
               </td>

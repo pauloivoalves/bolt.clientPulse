@@ -6,15 +6,21 @@ export interface Client {
   name: string;
   role: string;
   context: string;
+  email: string;
+  phone: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CreateClientData {
-  company: string;
-  name: string;
-  role: string;
-  context: string;
+    company: string;
+    name: string;
+    role: string;
+    context: string;
+    email: string;
+    phone: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 const getAuthHeader = () => {

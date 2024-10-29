@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Plus, Search, RefreshCcw, LogOut } from 'lucide-react';
-import { clientService, type Client } from '../services/clientService';
+import { clientService, type Client, type CreateClientData } from '../services/clientService';
 import { ClientTable } from './ClientTable';
 import { AddClientModal } from './AddClientModal';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../services/api';
 import { getToken } from '../services/api'; // Add this import
+import { EditClientModal } from './EditClientModal';
 
 export function Dashboard() {
   const [clients, setClients] = useState<Client[]>([]);
@@ -14,6 +15,7 @@ export function Dashboard() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
 
 // Add debug logging
 console.log('Token in the dashboard:', {
@@ -57,7 +59,7 @@ console.log('Token in the dashboard:', {
     }
   };
 
-  const handleAddClient = async (clientData: Omit<Client, '_id' | 'createdAt' | 'updatedAt'>) => {
+  const handleAddClient = async (clientData: CreateClientData) => {
     try {
       await clientService.createClient(clientData);
       setShowAddModal(false);
@@ -79,6 +81,25 @@ console.log('Token in the dashboard:', {
     } catch (error) {
       setError('Failed to logout');
       console.error(error);
+    }
+  };
+
+  const handleUpdateClient = async (clientId: string, updatedData: Partial<Client>) => {
+    try {
+      await clientService.updateClient(clientId, updatedData as CreateClientData);
+      setSelectedClient(null);
+      loadClients();
+    } catch (err: any) {
+      setError('Failed to update client');
+    }
+  };
+
+  const handleDeleteClient = async (clientId: string) => {
+    try {
+      await clientService.deleteClient(clientId);
+      loadClients();
+    } catch (err: any) {
+      setError('Failed to delete client');
     }
   };
 
@@ -144,6 +165,8 @@ console.log('Token in the dashboard:', {
               clients={filteredClients} 
               isLoading={isLoading} 
               onRefresh={loadClients}
+              onEdit={setSelectedClient}
+              onDelete={handleDeleteClient}
             />
           </div>
         </div>
@@ -153,6 +176,14 @@ console.log('Token in the dashboard:', {
         <AddClientModal
           onClose={() => setShowAddModal(false)}
           onAdd={handleAddClient}
+        />
+      )}
+
+      {selectedClient && (
+        <EditClientModal
+          client={selectedClient}
+          onClose={() => setSelectedClient(null)}
+          onUpdate={handleUpdateClient}
         />
       )}
     </div>
