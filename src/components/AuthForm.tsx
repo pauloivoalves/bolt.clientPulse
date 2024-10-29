@@ -83,6 +83,15 @@ export function AuthForm({ initialMode }: AuthFormProps) {
 
   return (
     <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl mx-auto">
+      <div className="mb-4">
+        <a 
+          href="/" 
+          className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
+        >
+          ← Back to Home
+        </a>
+      </div>
+
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
           {mode === 'login' ? 'Welcome back' : 'Create account'}
