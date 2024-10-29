@@ -63,7 +63,7 @@ export function AuthForm({ initialMode }: AuthFormProps) {
         console.log('User token:', response.token);
 
         // Redirect or update UI as needed
-       // window.location.href = '/dashboard'; // Or use your router's navigation
+       window.location.href = '/dashboard';
 
       }
     } catch (err: any) {

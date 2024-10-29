@@ -1,4 +1,5 @@
-import { ArrowRight, Shield, Zap, Globe2, LineChart, MessageSquare, BrainCircuit } from 'lucide-react';
+import { ArrowRight, LineChart, MessageSquare, BrainCircuit } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -40,7 +41,9 @@ function DetailedFeature({ title, description, image }: DetailedFeatureProps) {
   );
 }
 
-export function LandingPage({ onNavigate }: { onNavigate: (page: string) => void }) {
+export function LandingPage() {
+  const navigate = useNavigate();
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
       <div className="text-center mb-16">
@@ -48,18 +51,17 @@ export function LandingPage({ onNavigate }: { onNavigate: (page: string) => void
           Transform Client Communication with <span className="text-blue-600">ClientPulse</span>
         </h1>
         <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-          Track client sentiment, identify trends, and prevent churn with our powerful communication analytics platform. Get a visual timeline of client interactions and take proactive action before issues escalate.
+          Track client sentiment, identify trends, and prevent churn with our powerful communication analytics platform.
         </p>
         <div className="flex gap-4 justify-center">
           <button
-            onClick={() => onNavigate('login')}
+            onClick={() => navigate('/login')}
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
           >
             Start Free Trial
-            <ArrowRight className="h-5 w-5" />
           </button>
           <button
-            onClick={() => onNavigate('signup')}
+            onClick={() => navigate('/signup')}
             className="px-6 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-50 transition-colors border border-blue-600"
           >
             Schedule Demo

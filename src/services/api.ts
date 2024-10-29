@@ -48,3 +48,5 @@ export async function login(credentials: { email: string; password: string }) {
     throw new Error('Network error occurred');
   }
 }
+
+export default api;
