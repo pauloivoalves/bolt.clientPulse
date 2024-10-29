@@ -55,6 +55,7 @@ export function AuthForm({ initialMode }: AuthFormProps) {
         
         // Store the token in localStorage or your preferred storage method
         localStorage.setItem('authToken', response.token);
+        localStorage.setItem('user', response.user);
         
         // Clear form
         setFormData({ email: '', password: '', name: '' });
@@ -63,7 +64,7 @@ export function AuthForm({ initialMode }: AuthFormProps) {
         console.log('User token:', response.token);
 
         // Redirect or update UI as needed
-       window.location.href = '/dashboard';
+        window.location.href = '/dashboard';
 
       }
     } catch (err: any) {

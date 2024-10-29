@@ -4,7 +4,8 @@ import { clientService, type Client } from '../services/clientService';
 import { ClientTable } from './ClientTable';
 import { AddClientModal } from './AddClientModal';
 import { Link, useNavigate } from 'react-router-dom';
-import { authService } from '../services/authService';
+import { logout } from '../services/api';
+import { getToken } from '../services/api'; // Add this import
 
 export function Dashboard() {
   const [clients, setClients] = useState<Client[]>([]);
@@ -14,23 +15,47 @@ export function Dashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
+// Add debug logging
+console.log('Token in the dashboard:', {
+    token: getToken(),
+  });
+
+
+  useEffect(() => {
+    // Check authentication on component mount
+    const token = getToken();
+    if (!token) {
+      navigate('/');
+      return;
+    }
+    loadClients();
+  }, [navigate]);
+
   const loadClients = async () => {
     try {
+      const token = getToken();
+      if (!token) {
+        navigate('/');
+        return;
+      }
+      
       setIsLoading(true);
       const data = await clientService.getClients();
       setClients(data);
       setError('');
     } catch (err: any) {
-      setError('Failed to load clients');
-      console.error(err);
+      if (err.response?.status === 401) {
+        console.log('dados do cliente:', {
+            data: err.response.data,
+          });
+      } else {
+        setError('Failed to load clients');
+        console.error(err);
+      }
     } finally {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    loadClients();
-  }, []);
 
   const handleAddClient = async (clientData: Omit<Client, '_id' | 'createdAt' | 'updatedAt'>) => {
     try {
@@ -49,8 +74,8 @@ export function Dashboard() {
 
   const handleLogout = async () => {
     try {
-      await authService.logout();
-      navigate('/login');
+      await logout();
+      navigate('/');
     } catch (error) {
       setError('Failed to logout');
       console.error(error);

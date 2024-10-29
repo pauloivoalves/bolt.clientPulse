@@ -1,4 +1,4 @@
-import { ArrowRight, LineChart, MessageSquare, BrainCircuit } from 'lucide-react';
+import { LineChart, MessageSquare, BrainCircuit } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface FeatureCardProps {

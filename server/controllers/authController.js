@@ -56,16 +56,61 @@ export const login = async (req, res) => {
         { expiresIn: '24h' }
       );
   
-      // Return user data (excluding password) and token
+      // Set token as HTTP-only cookie
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      });
+  
+      // Return user data and token
       const userData = {
         id: user._id,
         name: user.name,
         email: user.email
       };
-  
+           
       res.json({ user: userData, token });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Server error during login' });
+  } 
+};
+
+export const logout = async (req, res) => {
+  try {
+   
+
+    // Clear any server-side session if you're using sessions
+    if (req.session) {
+      req.session.destroy();
+    }
+
+    // Clear cookies if you're using them
+    res.clearCookie('token');
+    res.clearCookie('refreshToken');
+
+    res.status(200).json({ message: 'Logged out successfully' });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ message: 'Server error during logout' });
+  }
+};
+
+// Add a new middleware for token verification
+export const verifyToken = async (req, res, next) => {
+  try {
+    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Invalid or expired token' });
   }
 };
