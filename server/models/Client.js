@@ -28,6 +28,11 @@ const clientSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  status: {
+    type: String,
+    enum: ['Active', 'Inactive'],
+    default: 'Active'
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

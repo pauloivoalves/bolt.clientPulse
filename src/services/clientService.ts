@@ -10,6 +10,7 @@ export interface Client {
   phone: string;
   createdAt: string;
   updatedAt: string;
+  status: 'Active' | 'Inactive';
 }
 
 export interface CreateClientData {
@@ -21,6 +22,7 @@ export interface CreateClientData {
     phone: string;
     createdAt: string;
     updatedAt: string;
+    status: 'Active' | 'Inactive';
 }
 
 const getAuthHeader = () => {

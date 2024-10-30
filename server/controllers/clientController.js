@@ -36,13 +36,13 @@ export const getClients = async (req, res) => {
 export const updateClient = async (req, res) => {
   try {
     console.log('Update request body:', req.body);
-    const { company, name, role, context, email, phone } = req.body;
+    const { company, name, role, context, email, phone, status } = req.body;
     
-    console.log('Update data being sent:', { company, name, role, context, email, phone });
+    console.log('Update data being sent:', { company, name, role, context, email, phone, status });
     
     const client = await Client.findOneAndUpdate(
       { _id: req.params.id, user: req.user.id },
-      { company, name, role, context, email, phone },
+      { company, name, role, context, email, phone, status },
       { new: true }
     );
     

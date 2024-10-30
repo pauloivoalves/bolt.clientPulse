@@ -45,7 +45,16 @@ export function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
+    <div className="relative max-w-6xl mx-auto px-4 py-12">
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={() => navigate('/login')}
+          className="px-4 py-2 text-blue-600 hover:text-blue-700 font-medium"
+        >
+          Sign In
+        </button>
+      </div>
+
       <div className="text-center mb-16">
         <h1 className="text-5xl font-bold text-gray-900 mb-6">
           Transform Client Communication with <span className="text-blue-600">ClientPulse</span>

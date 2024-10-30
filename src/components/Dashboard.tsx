@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, RefreshCcw, LogOut } from 'lucide-react';
+import { Plus, Search, RefreshCcw, LogOut, LayoutGrid, Table as TableIcon } from 'lucide-react';
 import { clientService, type Client, type CreateClientData } from '../services/clientService';
 import { ClientTable } from './ClientTable';
 import { AddClientModal } from './AddClientModal';
@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../services/api';
 import { getToken } from '../services/api'; // Add this import
 import { EditClientModal } from './EditClientModal';
+import { ClientCards } from './ClientCards';
 
 export function Dashboard() {
   const [clients, setClients] = useState<Client[]>([]);
@@ -16,6 +17,7 @@ export function Dashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
 
 // Add debug logging
 console.log('Token in the dashboard:', {
@@ -146,13 +148,35 @@ console.log('Token in the dashboard:', {
                   className="pl-10 w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
                 />
               </div>
-              <button
-                onClick={loadClients}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <RefreshCcw className="h-5 w-5" />
-                Refresh
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setViewMode('table')}
+                  className={`p-2 rounded-lg transition-colors ${
+                    viewMode === 'table' 
+                      ? 'bg-blue-100 text-blue-600' 
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <TableIcon className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => setViewMode('cards')}
+                  className={`p-2 rounded-lg transition-colors ${
+                    viewMode === 'cards' 
+                      ? 'bg-blue-100 text-blue-600' 
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <LayoutGrid className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={loadClients}
+                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <RefreshCcw className="h-5 w-5" />
+                  Refresh
+                </button>
+              </div>
             </div>
 
             {error && (
@@ -161,13 +185,22 @@ console.log('Token in the dashboard:', {
               </div>
             )}
 
-            <ClientTable 
-              clients={filteredClients} 
-              isLoading={isLoading} 
-              onRefresh={loadClients}
-              onEdit={setSelectedClient}
-              onDelete={handleDeleteClient}
-            />
+            {viewMode === 'table' ? (
+              <ClientTable 
+                clients={filteredClients} 
+                isLoading={isLoading} 
+                onRefresh={loadClients}
+                onEdit={setSelectedClient}
+                onDelete={handleDeleteClient}
+              />
+            ) : (
+              <ClientCards
+                clients={filteredClients}
+                isLoading={isLoading}
+                onEdit={setSelectedClient}
+                onDelete={handleDeleteClient}
+              />
+            )}
           </div>
         </div>
       </div>
