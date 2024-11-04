@@ -1,5 +1,11 @@
 import api from './api';
 
+export interface ClientMessage {
+  content: string;
+  timestamp: string;
+  sentiment: 'positive' | 'neutral' | 'negative';
+}
+
 export interface Client {
   _id: string;
   company: string;
@@ -11,6 +17,8 @@ export interface Client {
   createdAt: string;
   updatedAt: string;
   status: 'Active' | 'Inactive';
+  health: 'good' | 'neutral' | 'bad';
+  messages: ClientMessage[];
 }
 
 export interface CreateClientData {
@@ -54,6 +62,13 @@ export const clientService = {
 
   async deleteClient(id: string) {
     const response = await api.delete(`/clients/${id}`, {
+      headers: getAuthHeader()
+    });
+    return response.data;
+  },
+
+  async uploadMessages(clientId: string, messages: ClientMessage[]) {
+    const response = await api.post(`/clients/${clientId}/messages`, { messages }, {
       headers: getAuthHeader()
     });
     return response.data;

@@ -11,7 +11,8 @@ export const createClient = async (req, res) => {
       context,  
       email,
       phone,
-      user: req.user.id // This will come from auth middleware
+      health: 'neutral',
+      user: req.user.id
     });
 
     console.log('Client before save:', client);
@@ -72,5 +73,31 @@ export const deleteClient = async (req, res) => {
     res.json({ message: 'Client deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting client', error: error.message });
+  }
+};
+
+export const uploadMessages = async (req, res) => {
+  try {
+    const { messages } = req.body;
+    
+    // Validate messages format
+    if (!Array.isArray(messages)) {
+      return res.status(400).json({ message: 'Messages must be an array' });
+    }
+
+    // Find the client and update messages
+    const client = await Client.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id },
+      { $push: { messages: { $each: messages } } },
+      { new: true }
+    );
+
+    if (!client) {
+      return res.status(404).json({ message: 'Client not found' });
+    }
+
+    res.json(client);
+  } catch (error) {
+    res.status(500).json({ message: 'Error uploading messages', error: error.message });
   }
 };

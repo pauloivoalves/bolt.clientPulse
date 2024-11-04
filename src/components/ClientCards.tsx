@@ -8,10 +8,23 @@ interface ClientCardsProps {
   onDelete: (clientId: string) => void;
 }
 
-function getHealthColor(health: number): string {
-  if (health >= 80) return 'bg-green-500';
-  if (health >= 50) return 'bg-yellow-500';
-  return 'bg-red-500';
+function getHealthColor(health: string): string {
+  switch (health) {
+    case 'good':
+      return 'bg-green-500';
+    case 'neutral':
+      return 'bg-yellow-500';
+    case 'bad':
+      return 'bg-red-500';
+    default:
+      return 'bg-gray-500';
+  }
+}
+
+function getRandomHealth(): string {
+  const statuses = ['good', 'neutral', 'bad'];
+  const randomIndex = Math.floor(Math.random() * statuses.length);
+  return statuses[randomIndex];
 }
 
 export function ClientCards({ clients, isLoading, onEdit, onDelete }: ClientCardsProps) {
@@ -38,7 +51,7 @@ export function ClientCards({ clients, isLoading, onEdit, onDelete }: ClientCard
               <div className="flex items-center gap-2">
                 <h3 className="text-lg font-semibold text-gray-900">{client.name}</h3>
                 <div className="flex items-center gap-1.5 bg-gray-100 px-2 py-1 rounded-full">
-                  <div className={`w-2.5 h-2.5 rounded-full ${getHealthColor(Math.random() * 100)}`}></div>
+                  <div className={`w-2.5 h-2.5 rounded-full ${getHealthColor(getRandomHealth())}`}></div>
                   <Activity className="h-4 w-4 text-gray-500" />
                 </div>
               </div>

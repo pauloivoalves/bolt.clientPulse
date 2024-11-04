@@ -33,11 +33,31 @@ const clientSchema = new mongoose.Schema({
     enum: ['Active', 'Inactive'],
     default: 'Active'
   },
+  health: {
+    type: String,
+    enum: ['good', 'neutral', 'bad'],
+    default: 'neutral'
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
-  }
+  },
+  messages: [{
+    content: {
+      type: String,
+      required: true
+    },
+    timestamp: {
+      type: Date,
+      required: true
+    },
+    sentiment: {
+      type: String,
+      enum: ['positive', 'neutral', 'negative'],
+      default: 'neutral'
+    }
+  }]
 }, {
   timestamps: true
 });

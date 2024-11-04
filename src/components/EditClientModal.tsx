@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Client } from '../services/clientService';
+import { MessageUploader } from '../components/MessageUploader';
 
 interface EditClientModalProps {
   client: Client;
@@ -17,6 +18,7 @@ export function EditClientModal({ client, onClose, onUpdate }: EditClientModalPr
     email: '',
     phone: '',
   });
+  const [showMessageUploader, setShowMessageUploader] = useState(false);
 
   useEffect(() => {
     if (client) {
@@ -38,6 +40,17 @@ export function EditClientModal({ client, onClose, onUpdate }: EditClientModalPr
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      {showMessageUploader && (
+        <MessageUploader
+          clientId={client._id}
+          onClose={() => setShowMessageUploader(false)}
+          onUploadComplete={() => {
+            setShowMessageUploader(false);
+            onUpdate(client._id, formData);
+          }}
+        />
+      )}
+
       <div className="bg-white rounded-lg w-full max-w-md">
         <div className="flex justify-between items-center p-6 border-b">
           <h2 className="text-xl font-semibold">Edit Client</h2>
@@ -117,6 +130,13 @@ export function EditClientModal({ client, onClose, onUpdate }: EditClientModalPr
               className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
             >
               Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowMessageUploader(true)}
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            >
+              Upload Messages
             </button>
             <button
               type="submit"
